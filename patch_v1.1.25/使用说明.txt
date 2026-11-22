@@ -1,0 +1,94 @@
+赛尔号 精灵美术修复累积补丁（v1.1.25）
+======================================
+
+本补丁是「累积补丁」：已包含 v1.1.16 / v1.1.15 的全部文件，
+再叠加 3041 的真实逐帧战斗动画、对战立绘放大与待机 trim 路径。
+已装 v1.1.11 及以后版本的用户，只装这一个包。
+
+【v1.1.25 新增：3041 待机立绘再放大 + 播放速度修正】
+1) 立绘仍然偏小的原因
+   v1.1.24 虽然新增了 3041_1.trim，但 catalog.json 里没有
+   FightAnimTrim/3041_1 这个 Addressables key，游戏按 key 取不到待机 trim，
+   FightAnimTrimApplier 不生效，显示尺寸仍被 prefab 的 330x389 固定框拉伸。
+   本版在 catalog 追加该 key / entry / internalId，并把待机画布
+   从 459x490 提到 469x500；trim 生效后显示等效高度约 500，
+   较 v1.1.24 的约 377 提升约 1.33 倍，画面不再被 330x389 框压小。
+2) 待机“加速感”的原因
+   3041_1 clip 的 21 帧离散 PPtr 关键帧原为 1/60 秒步长（0.35 秒播完，
+   相当于官方 25fps 的 2.4 倍速）。本版改写为 1/25 秒步长
+   （0.84 秒播完），并把 clip 的 SampleRate 改为 25、StopTime 改为 0.84，
+   待机动作恢复到官方 SWF 的节奏。
+3) 攻击段不受影响
+   3041_2/3/4 共 197 帧的贴图、Sprite、trim JSON、AnimationClip
+   与 v1.1.23 逐字节一致；只有待机 3041_1 的 21 张图、trim、clip 变化。
+
+  说明：21 帧直接取自官方矢量源
+  http://seer.61.com/resource/fightResource/pet/swf/3041.swf
+  （FFDec 导出 DefineSprite_139_pet 逐帧 SVG，4 倍超采样渲染）。
+  SWF 原 30 帧中第 6~8 帧是全屏蓝色爆发特效（会完全遮住本体），
+  只取连续待机段第 9~30 帧均分到 21 帧，待机循环里不会出现爆发闪烁。
+
+【v1.1.24 内容：3041 待机改走 trim 路径】
+- 新增 TextAsset 3041_1.trim（21 帧），AB 容器新增路径
+  3041_1/3041_1.trim.json，PreloadTable 447 -> 448，对象总数 445 -> 446。
+- 当时待机画布 459x490，trimX = trimY = 0，sourceW/H = trimW/H，
+  水平中心 + 底边对齐（catalog 未登记 key，v1.1.25 已补齐）。
+
+【v1.1.23 内容：3041 对战立绘放大】
+- 3041_1（待机）21 帧统一重排到 328x350 画布：美术按 1.33 倍重绘、
+  底边居中、填满画布。
+- 攻击 3041_2/3/4 的画布改为「美术外接框 x 1.30」，贴图与 trim 同步更新；
+  trim 底边与源画布尺寸保持官方值，水平中心不变。
+
+【v1.1.22 内容：3041 真实逐帧战斗动画】
+- 重做 assets/aa/Android/fight3041_...bundle 中的全部 218 张战斗贴图，
+  从官方 3041_fight.swf 导出逐帧矢量画面，按 4 倍超采样渲染后写入对应画布：
+  3041_1 = 21 帧、3041_2 = 88 帧、3041_3 = 53 帧、3041_4 = 56 帧。
+
+【v1.1.21 内容：3041 战斗资源接入】
+- 新增 assets/aa/Android/fight3041_...bundle：注册 3041 的 4 段动画、
+  3 段 trim 数据与战斗贴图；catalog.json 登记 3041 bundle 与动画路径。
+- 进入 3041 战斗不再报「战斗资源加载失败」。
+
+【v1.1.16 内容：三只精灵美术资源】
+游戏本体里 3041 极 / 3042 利亚苏斯 / 3043 焱武·圣尊 只有数据、没有美术资源。
+本补丁从官方资源站 seer.61.com 下载 SWF，抠出立绘后注入客户端资源包：
+
+  peticon_...bundle  PetIconBig 图集：新增上述 3 个 Sprite（1050 → 1053）
+  fight_...bundle    PetFightIcon 图集：新增同样 3 只的战斗头像（1052 → 1055）
+
+各新增一张独立贴图页 + Sprite + SpriteAtlasV2 索引；
+原有精灵（含 3577 等已改立绘）的贴图与矩形完全未动。
+
+【保留的 v1.1.15 内容】
+  - 启动闪退修复（贴图像素偏移写错、覆盖 m_StreamData 的问题）；
+  - 加载页（星空 / 星环背景）四边白边移除；
+  - 精灵背包立绘、对战技能面板立绘、属性图标放大等 v1.1.11 界面改动。
+
+【文件清单】
+  assets/aa/catalog.json                          4113194 B （v1.1.25 追加 3041_1 key）
+  assets/aa/Android/fight3041_...bundle           5523472 B （v1.1.25 待机放大 + 25fps）
+      SHA-256 178aa83b02324008502d9c74331e14803b0aae80c982558ed76c99e695f2fa7c
+  assets/aa/Android/peticon_...bundle            13393936 B （v1.1.16）
+  assets/aa/Android/fight_...bundle              22225328 B （v1.1.16）
+  assets/aa/Android/petstorage_...bundle            91232 B （v1.1.15）
+  assets/aa/Android/pettypebig_...bundle          1004512 B （v1.1.15）
+  assets/aa/Android/uimain_...bundle              9642672 B （v1.1.15）
+  assets/bin/Data/sharedassets0.assets.split48    1048576 B （v1.1.15）
+  assets/bin/Data/sharedassets0.assets.split49    1048576 B （v1.1.15）
+  seer-patch.keystore                                2638 B
+  使用说明.txt
+
+【安装】
+1. 备份原 APK；
+2. 用 MT 管理器 / ZArchiver 打开 APK，把本补丁的 assets 目录按原路径覆盖；
+3. 用补丁内 seer-patch.keystore 重新签名：
+     别名 seerpatch    密码 SeerPatch2026!
+4. 与 v1.1.11+ 本系列签名一致，可直接覆盖安装，存档保留。
+
+【仍然缺的】
+对战动画 fight3042/3043：官方网页只有 Flash SWF，
+移动端 2.2 客户端没有这两只的 Unity 战斗资源包，
+Flash 骨骼动画无法直接转成 Unity 资源，因此进战斗时只有静态形象。
+（3041 已在 v1.1.22 换成真实逐帧战斗动画，v1.1.23 放大立绘，
+  v1.1.24 改走 trim，v1.1.25 补齐 catalog key 并修正待机速度。）
