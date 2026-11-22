@@ -1,0 +1,25 @@
+赛尔号 1.0.1 修正版 v1.1.10 补丁说明
+=====================================
+
+v1.1.10 相对 v1.1.9 的改动：
+  1. 精灵背包右侧「精灵详情」里，光之惩戒的立绘整体下移 12px（已与详情框垂直居中）。
+  2. 对战头像（左上角血量框头像）里的光之惩戒立绘再下移 4px，垂直方向居中
+     （保留 v1.1.8 的水平重定心效果，未裁剪）。
+  3. 对战左下角宠物卡片（技能面板）的立绘保持不裁剪、不变形，仅按贴图可用空间
+     放到最大，并把画面在画布内垂直居中。
+  其余（背包左侧预览、仓库铺满、神灵图标、名字行图标）与 v1.1.9 一致。
+
+包含文件（覆盖进 APK 的 assets/aa/Android/）：
+  peticon_assets_all_051ca4e72be71ecbb6da4b41b3d7a753.bundle
+  fight_assets_all_c32312b91be3884937546802bfa190c8.bundle
+  pettypebig_assets_all_0eb3e7bdd008cc4dbfe3ad98711c92fc.bundle
+  uimain_assets_all_e0739de25e91db3ed1d223191202ae3c.bundle
+  petstorage_assets_all_fabfa71a1ffb344bd3e0c2574efdade4.bundle
+
+手机上合并（ZArchiver / MT 管理器等）：
+  1. 解压本补丁，得到 assets 目录和 seer-patch.keystore。
+  2. 直接用 ZArchiver/MT 打开完整 APK（不要整体解压）。
+  3. 进入 APK 内 assets/aa/Android/，覆盖 5 个同名 .bundle 文件。
+  4. 用 MT 管理器“APK 签名”：证书 seer-patch.keystore，别名 seerpatch，
+     密码 SeerPatch2026!（key 密码相同）。
+  5. 卸载旧版再安装（签名不同不能覆盖安装）。

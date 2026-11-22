@@ -1,0 +1,1023 @@
+    // ---------------------------------------------------------------- 图鉴通用组件
+
+    /** 属性筛选与配色统一使用的系别顺序。 */
+    private static final String[] DEX_TYPE_ORDER = {
+            "草", "水", "火", "飞行", "电", "机械", "地面", "普通", "冰", "超能",
+            "战斗", "光", "暗影", "神秘", "龙", "圣灵", "次元", "远古", "邪灵", "自然",
+            "神灵"
+    };
+
+    private LinearLayout dexCard() {
+        LinearLayout c = new LinearLayout(this);
+        c.setOrientation(LinearLayout.VERTICAL);
+        c.setBackground(roundStroke(0x66071022, C_LINE, 12, 1));
+        c.setPadding(dp(12), dp(10), dp(12), dp(10));
+        return c;
+    }
+
+    private void dexAddCard(LinearLayout parent, LinearLayout card, int topMargin) {
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
+        lp.topMargin = dp(topMargin);
+        parent.addView(card, lp);
+    }
+
+    private TextView dexSectionTitle(String text) {
+        TextView t = new TextView(this);
+        t.setText(text);
+        t.setTextSize(11);
+        t.setTypeface(Typeface.DEFAULT_BOLD);
+        t.setTextColor(C_GOLD_DIM);
+        return t;
+    }
+
+    private TextView dexChipView(String text, int fg, int fill, int border) {
+        TextView t = new TextView(this);
+        t.setText(text);
+        t.setTextSize(10);
+        t.setTextColor(fg);
+        t.setGravity(Gravity.CENTER);
+        t.setPadding(dp(8), dp(2), dp(8), dp(2));
+        t.setBackground(roundStroke(fill, border, 7, 1));
+        return t;
+    }
+
+    private LinearLayout dexChipLine() {
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        return row;
+    }
+
+    private void dexAddChip(LinearLayout row, View chip, int rightMargin) {
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-2, -2);
+        lp.rightMargin = dp(rightMargin);
+        row.addView(chip, lp);
+    }
+
+    private LinearLayout dexStatGrid(String[] labels, String[] values, int[] colors) {
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setPadding(0, dp(8), 0, dp(2));
+        for (int i = 0; i < labels.length; i++) {
+            if (i > 0) {
+                View line = new View(this);
+                line.setBackgroundColor(0x14FFFFFF);
+                row.addView(line, new LinearLayout.LayoutParams(dp(1), dp(28)));
+            }
+            LinearLayout cell = new LinearLayout(this);
+            cell.setOrientation(LinearLayout.VERTICAL);
+            cell.setGravity(Gravity.CENTER_HORIZONTAL);
+            TextView label = new TextView(this);
+            label.setText(labels[i]);
+            label.setTextSize(9);
+            label.setTextColor(C_TEXT_FAINT);
+            label.setGravity(Gravity.CENTER);
+            cell.addView(label);
+            TextView value = new TextView(this);
+            value.setText(values[i]);
+            value.setTextSize(16);
+            value.setTypeface(Typeface.MONOSPACE);
+            value.setTextColor(colors != null && colors[i] != 0 ? colors[i] : C_TEXT);
+            value.setGravity(Gravity.CENTER);
+            cell.addView(value);
+            row.addView(cell, new LinearLayout.LayoutParams(0, -2, 1f));
+        }
+        return row;
+    }
+
+    private TextView dexBackView(String label, final Runnable back) {
+        TextView t = new TextView(this);
+        t.setText(label);
+        t.setTextSize(13);
+        t.setTextColor(C_GOLD);
+        t.setPadding(dp(2), dp(2), dp(8), dp(10));
+        t.setBackground(pressable(round(0x00000000, 8), 0x22F0C24B));
+        t.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                back.run();
+            }
+        });
+        return t;
+    }
+
+    private TextView dexEmptyView(String msg) {
+        TextView t = new TextView(this);
+        t.setText(msg);
+        t.setTextSize(12);
+        t.setTextColor(C_TEXT_FAINT);
+        t.setGravity(Gravity.CENTER);
+        t.setLineSpacing(dp(4), 1f);
+        t.setVisibility(View.GONE);
+        return t;
+    }
+
+    private SpannableString dexHighlight(String text, String kw) {
+        SpannableString ss = new SpannableString(text == null ? "" : text);
+        if (kw == null || kw.length() == 0) return ss;
+        String low = ss.toString().toLowerCase(Locale.ROOT);
+        String k = kw.toLowerCase(Locale.ROOT);
+        int from = 0;
+        while (from <= low.length() - k.length()) {
+            int i = low.indexOf(k, from);
+            if (i < 0) break;
+            ss.setSpan(new ForegroundColorSpan(C_GOLD), i, i + k.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            from = i + k.length();
+        }
+        return ss;
+    }
+
+    /** 描述命中时截取关键词附近的片段，避免整段描述挤满列表。 */
+    private String dexSnippet(String desc, String kw, int radius) {
+        if (desc == null || desc.length() == 0 || kw == null || kw.length() == 0) return "";
+        String low = desc.toLowerCase(Locale.ROOT);
+        int i = low.indexOf(kw.toLowerCase(Locale.ROOT));
+        if (i < 0) return "";
+        int start = Math.max(0, i - radius);
+        int end = Math.min(desc.length(), i + kw.length() + radius);
+        return (start > 0 ? "…" : "") + desc.substring(start, end)
+                + (end < desc.length() ? "…" : "");
+    }
+
+    private static int dexTypeRank(String t) {
+        if (t == null || t.length() == 0) return 900;
+        if ("未知".equals(t)) return 999;
+        for (int i = 0; i < DEX_TYPE_ORDER.length; i++) {
+            if (DEX_TYPE_ORDER[i].equals(t)) return i;
+        }
+        for (int i = 0; i < DEX_TYPE_ORDER.length; i++) {
+            if (t.startsWith(DEX_TYPE_ORDER[i])) return 100 + i;
+        }
+        return 800;
+    }
+
+    /** 收集并排序属性筛选项，首项固定为“全部”。 */
+    private List<String> dexTypes(JSONArray src, String key) {
+        List<String> out = new ArrayList<>();
+        out.add("全部");
+        if (src != null) {
+            for (int i = 0; i < src.length(); i++) {
+                JSONObject o = src.optJSONObject(i);
+                if (o == null) continue;
+                String t = o.optString(key, "未知");
+                if (!out.contains(t)) out.add(t);
+            }
+        }
+        Collections.sort(out.subList(1, out.size()), new Comparator<String>() {
+            public int compare(String a, String b) {
+                int ra = dexTypeRank(a);
+                int rb = dexTypeRank(b);
+                return ra != rb ? ra - rb : a.compareTo(b);
+            }
+        });
+        return out;
+    }
+
+    // ---------------------------------------------------------------- 精灵 / 技能图鉴
+
+    private void showPetDex() {
+        showPetDex(0);
+    }
+
+    /** 精灵 / 技能图鉴。mode：0 = 精灵，1 = 技能。 */
+    private void showPetDex(final int initialMode) {
+        loadDex();
+        loadSkills();
+
+        final Dialog dlg = new Dialog(this);
+        dlg.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        FrameLayout root = new FrameLayout(this);
+        root.setPadding(dp(10), dp(12), dp(10), dp(12));
+
+        LinearLayout card = new LinearLayout(this);
+        card.setOrientation(LinearLayout.VERTICAL);
+        card.setBackground(roundStroke(0xFF0B1424, C_LINE, 16, 1));
+        card.setPadding(dp(14), dp(12), dp(14), dp(8));
+        root.addView(card, new FrameLayout.LayoutParams(-1, -1));
+
+        final int[] mode = {initialMode == 1 ? 1 : 0};
+        final String[] petSel = {"全部"};
+        final String[] skillSel = {"全部"};
+        final String[] skillKw = {""};
+        final List<JSONObject> filteredPets = new ArrayList<>();
+        final List<JSONObject> filteredSkills = new ArrayList<>();
+        final SkillOpen[] sopen = new SkillOpen[1];
+        final PetOpen[] popen = new PetOpen[1];
+
+        // 标题栏
+        LinearLayout head = new LinearLayout(this);
+        head.setOrientation(LinearLayout.HORIZONTAL);
+        head.setGravity(Gravity.CENTER_VERTICAL);
+        final TextView title = new TextView(this);
+        title.setText("精灵图鉴");
+        title.setTextSize(17);
+        title.setTypeface(Typeface.DEFAULT_BOLD);
+        title.setTextColor(C_TEXT);
+        head.addView(title, new LinearLayout.LayoutParams(0, -2, 1f));
+        final TextView count = new TextView(this);
+        count.setTextSize(10);
+        count.setTextColor(C_TEXT_FAINT);
+        LinearLayout.LayoutParams countLp = new LinearLayout.LayoutParams(-2, -2);
+        countLp.rightMargin = dp(10);
+        head.addView(count, countLp);
+        TextView close = new TextView(this);
+        close.setText("✕");
+        close.setTextSize(17);
+        close.setTextColor(C_TEXT_DIM);
+        close.setGravity(Gravity.CENTER);
+        close.setPadding(dp(6), dp(2), dp(2), dp(2));
+        close.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                dlg.dismiss();
+            }
+        });
+        head.addView(close);
+        card.addView(head);
+
+        // 精灵 / 技能 分段标签
+        LinearLayout tabs = new LinearLayout(this);
+        tabs.setOrientation(LinearLayout.HORIZONTAL);
+        tabs.setBackground(roundStroke(C_FIELD, C_LINE, 10, 1));
+        tabs.setPadding(dp(3), dp(3), dp(3), dp(3));
+        final TextView tabPet = new TextView(this);
+        final TextView tabSkill = new TextView(this);
+        TextView[] tabViews = {tabPet, tabSkill};
+        String[] tabNames = {"精灵", "技能"};
+        for (int i = 0; i < tabViews.length; i++) {
+            TextView t = tabViews[i];
+            t.setText(tabNames[i]);
+            t.setTextSize(12);
+            t.setGravity(Gravity.CENTER);
+            t.setPadding(0, dp(7), 0, dp(7));
+            tabs.addView(t, new LinearLayout.LayoutParams(0, -2, 1f));
+        }
+        LinearLayout.LayoutParams tabsLp = new LinearLayout.LayoutParams(-1, -2);
+        tabsLp.topMargin = dp(10);
+        card.addView(tabs, tabsLp);
+
+        final Runnable paintTabs = new Runnable() {
+            public void run() {
+                TextView[] views = {tabPet, tabSkill};
+                for (int i = 0; i < views.length; i++) {
+                    boolean on = mode[0] == i;
+                    views[i].setTextColor(on ? 0xFF1A1406 : C_TEXT_DIM);
+                    views[i].setTypeface(on ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
+                    views[i].setBackground(on ? round(C_GOLD, 8) : null);
+                }
+            }
+        };
+
+        // 搜索
+        final EditText search = new EditText(this);
+        search.setSingleLine(true);
+        search.setTextSize(12);
+        search.setTextColor(C_TEXT);
+        search.setHintTextColor(C_TEXT_FAINT);
+        search.setHint("搜索精灵名 / 编号");
+        search.setBackground(roundStroke(C_FIELD, C_LINE, 10, 1));
+        search.setPadding(dp(12), dp(8), dp(12), dp(8));
+        search.setInputType(InputType.TYPE_CLASS_TEXT);
+        search.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+        LinearLayout.LayoutParams searchLp = new LinearLayout.LayoutParams(-1, dp(42));
+        searchLp.topMargin = dp(8);
+        card.addView(search, searchLp);
+
+        final Runnable[] refresh = new Runnable[1];
+        Runnable chipClick = new Runnable() {
+            public void run() {
+                if (refresh[0] != null) refresh[0].run();
+            }
+        };
+        final HorizontalScrollView petChips = dexChipRow(dexTypes(dexPets, "t"), petSel, chipClick);
+        final HorizontalScrollView skillChips = dexChipRow(dexTypes(dexSkills, "t"), skillSel, chipClick);
+        LinearLayout.LayoutParams chipsLp1 = new LinearLayout.LayoutParams(-1, -2);
+        chipsLp1.topMargin = dp(7);
+        card.addView(petChips, chipsLp1);
+        LinearLayout.LayoutParams chipsLp2 = new LinearLayout.LayoutParams(-1, -2);
+        chipsLp2.topMargin = dp(7);
+        card.addView(skillChips, chipsLp2);
+
+        // 列表
+        final ListView petList = new ListView(this);
+        final ListView skillList = new ListView(this);
+        for (ListView lv : new ListView[]{petList, skillList}) {
+            lv.setDivider(null);
+            lv.setDividerHeight(0);
+            lv.setSelector(new ColorDrawable(0));
+            lv.setVerticalScrollBarEnabled(false);
+            lv.setPadding(0, dp(4), 0, 0);
+            lv.setClipToPadding(false);
+            lv.setVisibility(View.GONE);
+        }
+        final TextView emptyPet = dexEmptyView("没有找到匹配的精灵");
+        final TextView emptySkill = dexEmptyView("没有找到匹配的技能\n试试技能名、描述片段或编号");
+        FrameLayout listBox = new FrameLayout(this);
+        LinearLayout.LayoutParams listLp = new LinearLayout.LayoutParams(-1, 0, 1f);
+        listLp.topMargin = dp(2);
+        card.addView(listBox, listLp);
+        listBox.addView(petList, new FrameLayout.LayoutParams(-1, -1));
+        listBox.addView(skillList, new FrameLayout.LayoutParams(-1, -1));
+        listBox.addView(emptyPet, new FrameLayout.LayoutParams(-1, -1));
+        listBox.addView(emptySkill, new FrameLayout.LayoutParams(-1, -1));
+
+        // 详情层：覆盖整个卡片，避免与列表互相透出
+        final FrameLayout detailBox = new FrameLayout(this);
+        detailBox.setBackground(roundStroke(0xFF0B1424, C_LINE, 16, 1));
+        detailBox.setPadding(dp(14), dp(12), dp(14), dp(8));
+        detailBox.setVisibility(View.GONE);
+        root.addView(detailBox, new FrameLayout.LayoutParams(-1, -1));
+        final ScrollView detail = new ScrollView(this);
+        final ScrollView skillDetail = new ScrollView(this);
+        detail.setVisibility(View.GONE);
+        skillDetail.setVisibility(View.GONE);
+        detailBox.addView(detail, new FrameLayout.LayoutParams(-1, -1));
+        detailBox.addView(skillDetail, new FrameLayout.LayoutParams(-1, -1));
+
+        final View[] layers = {petList, skillList, emptyPet, emptySkill, detailBox, detail, skillDetail};
+        final Runnable hideLayers = new Runnable() {
+            public void run() {
+                for (View v : layers) v.setVisibility(View.GONE);
+            }
+        };
+
+        final Runnable chromeOn = new Runnable() {
+            public void run() {
+                tabs.setVisibility(View.VISIBLE);
+                search.setVisibility(View.VISIBLE);
+                count.setVisibility(View.VISIBLE);
+                title.setText(mode[0] == 0 ? "精灵图鉴" : "技能图鉴");
+                petChips.setVisibility(mode[0] == 0 ? View.VISIBLE : View.GONE);
+                skillChips.setVisibility(mode[0] == 1 ? View.VISIBLE : View.GONE);
+            }
+        };
+        final Runnable chromeOff = new Runnable() {
+            public void run() {
+                tabs.setVisibility(View.GONE);
+                search.setVisibility(View.GONE);
+                count.setVisibility(View.GONE);
+                petChips.setVisibility(View.GONE);
+                skillChips.setVisibility(View.GONE);
+            }
+        };
+
+        class Restore implements Runnable {
+            private final View origin;
+
+            Restore(View origin) {
+                this.origin = origin;
+            }
+
+            public void run() {
+                hideLayers.run();
+                boolean browsing = origin == petList || origin == skillList;
+                if (browsing) {
+                    chromeOn.run();
+                } else {
+                    chromeOff.run();
+                    detailBox.setVisibility(View.VISIBLE);
+                }
+                origin.setVisibility(View.VISIBLE);
+                if (origin == petList) {
+                    emptyPet.setVisibility(filteredPets.isEmpty() ? View.VISIBLE : View.GONE);
+                } else if (origin == skillList) {
+                    emptySkill.setVisibility(filteredSkills.isEmpty() ? View.VISIBLE : View.GONE);
+                }
+            }
+        }
+
+        BaseAdapter petAdapter = new BaseAdapter() {
+            public int getCount() {
+                return filteredPets.size();
+            }
+
+            public Object getItem(int p) {
+                return filteredPets.get(p);
+            }
+
+            public long getItemId(int p) {
+                return p;
+            }
+
+            public View getView(int p, View cv, ViewGroup parent) {
+                JSONObject o = filteredPets.get(p);
+                String id = o.optString("i");
+                String nm = o.optString("n");
+                String ty = o.optString("t", "未知");
+                int col = dexTypeColor(ty);
+                boolean inDex = o.optInt("d", 1) == 1;
+
+                LinearLayout row = new LinearLayout(MainActivity.this);
+                row.setOrientation(LinearLayout.HORIZONTAL);
+                row.setGravity(Gravity.CENTER_VERTICAL);
+                row.setMinimumHeight(dp(54));
+                row.setPadding(dp(2), dp(5), dp(2), dp(5));
+                row.setBackground(pressable(round(0x00000000, 10), 0x1FFFFFFF));
+                row.addView(dexIconView(id, nm, col, 6),
+                        new LinearLayout.LayoutParams(dp(42), dp(42)));
+
+                LinearLayout mid = new LinearLayout(MainActivity.this);
+                mid.setOrientation(LinearLayout.VERTICAL);
+                mid.setPadding(dp(10), 0, dp(6), 0);
+                TextView name = new TextView(MainActivity.this);
+                name.setTextSize(14);
+                name.setTextColor(C_TEXT);
+                name.setSingleLine(true);
+                name.setEllipsize(TextUtils.TruncateAt.END);
+                name.setText(dexHighlight(nm, search.getText().toString().trim()));
+                mid.addView(name);
+                TextView sub = new TextView(MainActivity.this);
+                sub.setTextSize(10);
+                sub.setTextColor(col);
+                sub.setSingleLine(true);
+                sub.setText(ty);
+                mid.addView(sub);
+                row.addView(mid, new LinearLayout.LayoutParams(0, -2, 1f));
+
+                LinearLayout right = new LinearLayout(MainActivity.this);
+                right.setOrientation(LinearLayout.VERTICAL);
+                right.setGravity(Gravity.END);
+                if (!inDex) {
+                    TextView tag = new TextView(MainActivity.this);
+                    tag.setText("未收录");
+                    tag.setTextSize(8);
+                    tag.setTextColor(0xFFFFB36B);
+                    tag.setPadding(dp(4), 0, dp(4), dp(1));
+                    tag.setBackground(roundStroke(0x1AFFB36B, 0x66FFB36B, 5, 1));
+                    right.addView(tag);
+                }
+                TextView idv = new TextView(MainActivity.this);
+                idv.setText("#" + id);
+                idv.setTextSize(9);
+                idv.setTypeface(Typeface.MONOSPACE);
+                idv.setTextColor(C_TEXT_FAINT);
+                right.addView(idv);
+                row.addView(right);
+
+                final JSONObject pet = o;
+                row.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        if (popen[0] != null) popen[0].open(pet, "← 返回图鉴", petList);
+                    }
+                });
+                return row;
+            }
+        };
+
+        BaseAdapter skillAdapter = new BaseAdapter() {
+            public int getCount() {
+                return filteredSkills.size();
+            }
+
+            public Object getItem(int p) {
+                return filteredSkills.get(p);
+            }
+
+            public long getItemId(int p) {
+                return p;
+            }
+
+            public View getView(int p, View cv, ViewGroup parent) {
+                final JSONObject sk = filteredSkills.get(p);
+                final int sid = sk.optInt("i");
+                String nm = sk.optString("n");
+                String ty = sk.optString("t", "未知");
+                String cat = dexCategory(sk.optInt("c"));
+                int col = dexTypeColor(ty);
+                int power = sk.optInt("p");
+                int pp = sk.optInt("pp");
+                String kw = skillKw[0];
+
+                LinearLayout row = new LinearLayout(MainActivity.this);
+                row.setOrientation(LinearLayout.HORIZONTAL);
+                row.setGravity(Gravity.CENTER_VERTICAL);
+                row.setMinimumHeight(dp(52));
+                row.setPadding(dp(2), dp(5), dp(2), dp(5));
+                row.setBackground(pressable(round(0x00000000, 10), 0x1FFFFFFF));
+
+                TextView icon = new TextView(MainActivity.this);
+                icon.setText(cat.substring(0, 1));
+                icon.setTextSize(15);
+                icon.setTypeface(Typeface.DEFAULT_BOLD);
+                icon.setTextColor(col);
+                icon.setGravity(Gravity.CENTER);
+                icon.setBackground(roundStroke((col & 0x00FFFFFF) | 0x1A000000,
+                        (col & 0x00FFFFFF) | 0x66000000, 10, 1));
+                row.addView(icon, new LinearLayout.LayoutParams(dp(38), dp(38)));
+
+                LinearLayout mid = new LinearLayout(MainActivity.this);
+                mid.setOrientation(LinearLayout.VERTICAL);
+                mid.setPadding(dp(10), 0, dp(6), 0);
+                TextView name = new TextView(MainActivity.this);
+                name.setTextSize(14);
+                name.setTextColor(C_TEXT);
+                name.setSingleLine(true);
+                name.setEllipsize(TextUtils.TruncateAt.END);
+                name.setText(dexHighlight(nm, kw));
+                mid.addView(name);
+
+                String metaText = ty + " · " + cat;
+                if (power > 0 && power < 100000) metaText += " · 威力 " + power;
+                if (pp > 0) metaText += " · PP " + pp;
+                TextView meta = new TextView(MainActivity.this);
+                meta.setTextSize(10);
+                meta.setTextColor(C_TEXT_DIM);
+                meta.setSingleLine(true);
+                meta.setText(metaText);
+                mid.addView(meta);
+
+                if (kw.length() > 0 && !nm.toLowerCase(Locale.ROOT).contains(kw)) {
+                    String snippet = dexSnippet(sk.optString("d", ""), kw, 16);
+                    if (snippet.length() > 0) {
+                        TextView line = new TextView(MainActivity.this);
+                        line.setTextSize(10);
+                        line.setTextColor(C_TEXT_FAINT);
+                        line.setSingleLine(true);
+                        line.setEllipsize(TextUtils.TruncateAt.END);
+                        line.setPadding(0, dp(2), 0, 0);
+                        line.setText(dexHighlight(snippet, kw));
+                        mid.addView(line);
+                    }
+                }
+                row.addView(mid, new LinearLayout.LayoutParams(0, -2, 1f));
+
+                LinearLayout right = new LinearLayout(MainActivity.this);
+                right.setOrientation(LinearLayout.HORIZONTAL);
+                right.setGravity(Gravity.CENTER_VERTICAL);
+                TextView idv = new TextView(MainActivity.this);
+                idv.setText("#" + sid);
+                idv.setTextSize(9);
+                idv.setTypeface(Typeface.MONOSPACE);
+                idv.setTextColor(C_TEXT_FAINT);
+                right.addView(idv);
+                TextView arrow = new TextView(MainActivity.this);
+                arrow.setText("›");
+                arrow.setTextSize(16);
+                arrow.setTextColor(C_TEXT_FAINT);
+                LinearLayout.LayoutParams arrowLp = new LinearLayout.LayoutParams(-2, -2);
+                arrowLp.leftMargin = dp(4);
+                right.addView(arrow, arrowLp);
+                row.addView(right);
+
+                row.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        if (sopen[0] != null) sopen[0].open(sid, skillList);
+                    }
+                });
+                return row;
+            }
+        };
+
+        petList.setAdapter(petAdapter);
+        skillList.setAdapter(skillAdapter);
+
+        refresh[0] = new Runnable() {
+            public void run() {
+                String q = search.getText().toString().trim();
+                skillKw[0] = q.toLowerCase(Locale.ROOT);
+                if (mode[0] == 0) {
+                    filterDex(filteredPets, q, petSel[0]);
+                    petAdapter.notifyDataSetChanged();
+                    count.setText("共 " + filteredPets.size() + " 只");
+                    emptyPet.setVisibility(petList.getVisibility() == View.VISIBLE
+                            && filteredPets.isEmpty() ? View.VISIBLE : View.GONE);
+                    emptySkill.setVisibility(View.GONE);
+                } else {
+                    filterSkills(filteredSkills, q, skillSel[0]);
+                    skillAdapter.notifyDataSetChanged();
+                    count.setText("共 " + filteredSkills.size() + " 个");
+                    emptySkill.setVisibility(skillList.getVisibility() == View.VISIBLE
+                            && filteredSkills.isEmpty() ? View.VISIBLE : View.GONE);
+                    emptyPet.setVisibility(View.GONE);
+                }
+            }
+        };
+
+        final Runnable[] applyMode = new Runnable[1];
+        applyMode[0] = new Runnable() {
+            public void run() {
+                hideLayers.run();
+                chromeOn.run();
+                if (mode[0] == 0) {
+                    petList.setVisibility(View.VISIBLE);
+                } else {
+                    skillList.setVisibility(View.VISIBLE);
+                }
+                refresh[0].run();
+            }
+        };
+
+        popen[0] = new PetOpen() {
+            public void open(final JSONObject pet, String backLabel, final View origin) {
+                hideLayers.run();
+                chromeOff.run();
+                buildDexDetail(detail, pet, backLabel, new Restore(origin), sopen[0]);
+                detail.scrollTo(0, 0);
+                detailBox.setVisibility(View.VISIBLE);
+                detail.setVisibility(View.VISIBLE);
+                hideKeyboard(search);
+            }
+        };
+
+        sopen[0] = new SkillOpen() {
+            public void open(int sid, final View origin) {
+                JSONObject sk = findSkill(sid);
+                if (sk == null) return;
+                hideLayers.run();
+                chromeOff.run();
+                String label = origin == skillList ? "← 返回技能列表" : "← 返回精灵";
+                buildSkillDetail(skillDetail, sk, label, new Restore(origin), popen[0]);
+                skillDetail.scrollTo(0, 0);
+                detailBox.setVisibility(View.VISIBLE);
+                skillDetail.setVisibility(View.VISIBLE);
+                hideKeyboard(search);
+            }
+        };
+
+        View.OnClickListener tabClick = new View.OnClickListener() {
+            public void onClick(View v) {
+                int m = v == tabSkill ? 1 : 0;
+                if (mode[0] == m) return;
+                mode[0] = m;
+                search.setText("");
+                search.setHint(m == 0 ? "搜索精灵名 / 编号" : "搜索技能名 / 描述 / ID");
+                paintTabs.run();
+                applyMode[0].run();
+            }
+        };
+        tabPet.setOnClickListener(tabClick);
+        tabSkill.setOnClickListener(tabClick);
+
+        search.addTextChangedListener(new TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int a, int b, int c) {
+            }
+
+            public void onTextChanged(CharSequence s, int a, int b, int c) {
+            }
+
+            public void afterTextChanged(Editable s) {
+                if (refresh[0] != null) refresh[0].run();
+            }
+        });
+        search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    hideKeyboard(search);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        paintTabs.run();
+        applyMode[0].run();
+
+        dlg.setContentView(root);
+        Window window = dlg.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(0xF0040A17));
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        }
+        dlg.show();
+        Window shown = dlg.getWindow();
+        if (shown != null) {
+            shown.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+                    WindowManager.LayoutParams.MATCH_PARENT);
+        }
+    }
+
+    /** 精灵详情：立绘、种族值、全部可学技能。 */
+    private void buildDexDetail(ScrollView sv, JSONObject pet, String backLabel,
+                                final Runnable back, final SkillOpen skillOpen) {
+        sv.removeAllViews();
+        final String id = pet.optString("i");
+        final String nm = pet.optString("n");
+        final String ty = pet.optString("t", "未知");
+        final int col = dexTypeColor(ty);
+        JSONArray stats = pet.optJSONArray("s");
+        JSONArray skills = pet.optJSONArray("k");
+
+        LinearLayout col0 = new LinearLayout(this);
+        col0.setOrientation(LinearLayout.VERTICAL);
+        col0.setPadding(dp(2), 0, dp(2), dp(12));
+        sv.addView(col0, new FrameLayout.LayoutParams(-1, -2));
+        col0.addView(dexBackView(backLabel, back));
+
+        LinearLayout hero = new LinearLayout(this);
+        hero.setOrientation(LinearLayout.VERTICAL);
+        hero.setGravity(Gravity.CENTER_HORIZONTAL);
+        TextView name = new TextView(this);
+        name.setText(nm);
+        name.setTextSize(20);
+        name.setTypeface(Typeface.DEFAULT_BOLD);
+        name.setTextColor(C_TEXT);
+        name.setGravity(Gravity.CENTER);
+        hero.addView(name);
+
+        LinearLayout tags = dexChipLine();
+        tags.setPadding(0, dp(7), 0, 0);
+        dexAddChip(tags, dexChipView(ty, col, (col & 0x00FFFFFF) | 0x22000000,
+                (col & 0x00FFFFFF) | 0x66000000), 6);
+        boolean inDex = pet.optInt("d", 1) == 1;
+        dexAddChip(tags, dexChipView(inDex ? "已收录" : "未收录",
+                inDex ? C_CYAN : 0xFFFFB36B,
+                inDex ? 0x145FD8F0 : 0x1AFFB36B,
+                inDex ? 0x665FD8F0 : 0x66FFB36B), 0);
+        hero.addView(tags);
+
+        TextView sub = new TextView(this);
+        sub.setTextSize(10);
+        sub.setTextColor(C_TEXT_FAINT);
+        sub.setGravity(Gravity.CENTER);
+        sub.setPadding(0, dp(6), 0, 0);
+        sub.setText("ID " + id + "   ·   可学技能 " + (skills == null ? 0 : skills.length()) + " 个");
+        hero.addView(sub);
+
+        LinearLayout.LayoutParams portraitLp = new LinearLayout.LayoutParams(-1, dp(172));
+        portraitLp.topMargin = dp(8);
+        hero.addView(dexPortraitView(id, nm, col), portraitLp);
+        col0.addView(hero);
+
+        LinearLayout statCard = dexCard();
+        statCard.addView(dexSectionTitle("种族值"));
+        String[] labels = {"体力", "物攻", "防御", "特攻", "特防", "速度"};
+        String[] values = new String[6];
+        int[] colors = new int[6];
+        for (int i = 0; i < 6; i++) {
+            int v = stats == null ? 0 : stats.optInt(i);
+            values[i] = v > 0 ? String.valueOf(v) : "—";
+            colors[i] = v >= 120 ? C_GOLD : C_TEXT;
+        }
+        statCard.addView(dexStatGrid(labels, values, colors));
+        dexAddCard(col0, statCard, 14);
+
+        LinearLayout skillCard = dexCard();
+        int n = skills == null ? 0 : skills.length();
+        skillCard.addView(dexSectionTitle("技能（共 " + n + " 个）"));
+        if (n == 0) {
+            TextView empty = new TextView(this);
+            empty.setText("该精灵在客户端中没有可学技能记录");
+            empty.setTextSize(11);
+            empty.setTextColor(C_TEXT_FAINT);
+            empty.setPadding(0, dp(10), 0, dp(4));
+            skillCard.addView(empty);
+        } else {
+            TextView hint = new TextView(this);
+            hint.setText("点击技能查看完整描述与补充数据");
+            hint.setTextSize(9);
+            hint.setTextColor(C_TEXT_FAINT);
+            hint.setPadding(0, dp(3), 0, dp(4));
+            skillCard.addView(hint);
+            for (int k = 0; k < n; k++) {
+                JSONArray e = skills.optJSONArray(k);
+                if (e != null) {
+                    skillCard.addView(dexSkillRow(e.optInt(1), e.optInt(0), sv, skillOpen));
+                }
+            }
+        }
+        dexAddCard(col0, skillCard, 10);
+    }
+
+    /** 详情页中的单条技能：等级、名称、属性/分类/威力/PP。 */
+    private View dexSkillRow(final int sid, final int level, final View origin,
+                             final SkillOpen skillOpen) {
+        JSONObject s = findSkill(sid);
+        String nm = s == null ? "技能 " + sid : s.optString("n");
+        String ty = s == null ? "未知" : s.optString("t", "未知");
+        String cat = dexCategory(s == null ? 0 : s.optInt("c"));
+        int power = s == null ? 0 : s.optInt("p");
+        int pp = s == null ? 0 : s.optInt("pp");
+        int col = dexTypeColor(ty);
+
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setMinimumHeight(dp(38));
+        row.setPadding(dp(4), dp(3), dp(4), dp(3));
+        row.setBackground(pressable(round(0x00000000, 8), 0x1FFFFFFF));
+
+        TextView lv = new TextView(this);
+        lv.setText("Lv." + level);
+        lv.setTextSize(8);
+        lv.setTypeface(Typeface.MONOSPACE);
+        lv.setTextColor(C_TEXT_FAINT);
+        lv.setGravity(Gravity.CENTER);
+        lv.setBackground(roundStroke(C_FIELD, C_LINE, 6, 1));
+        row.addView(lv, new LinearLayout.LayoutParams(dp(40), dp(20)));
+
+        LinearLayout mid = new LinearLayout(this);
+        mid.setOrientation(LinearLayout.VERTICAL);
+        mid.setPadding(dp(9), 0, dp(4), 0);
+        TextView name = new TextView(this);
+        name.setText(nm);
+        name.setTextSize(13);
+        name.setTextColor(C_TEXT);
+        mid.addView(name);
+        String metaText = ty + " · " + cat;
+        if (power > 0 && power < 100000) metaText += " · 威力 " + power;
+        if (pp > 0) metaText += " · PP " + pp;
+        TextView meta = new TextView(this);
+        meta.setTextSize(9);
+        meta.setTextColor(C_TEXT_FAINT);
+        meta.setText(metaText);
+        mid.addView(meta);
+        row.addView(mid, new LinearLayout.LayoutParams(0, -2, 1f));
+
+        TextView arrow = new TextView(this);
+        arrow.setText("›");
+        arrow.setTextSize(16);
+        arrow.setTextColor(C_TEXT_FAINT);
+        row.addView(arrow);
+
+        row.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (skillOpen != null) skillOpen.open(sid, origin);
+            }
+        });
+        return row;
+    }
+
+    /** 技能详情：标签、基础数据、客户端描述、补充说明、可学精灵。 */
+    private void buildSkillDetail(ScrollView sv, JSONObject sk, String backLabel,
+                                  final Runnable back, final PetOpen petOpen) {
+        sv.removeAllViews();
+        final int sid = sk.optInt("i");
+        final String nm = sk.optString("n");
+        final String ty = sk.optString("t", "未知");
+        final String cat = dexCategory(sk.optInt("c"));
+        final int col = dexTypeColor(ty);
+        final int power = sk.optInt("p");
+        final int acc = sk.optInt("a");
+        final int pp = sk.optInt("pp");
+        final int pri = sk.optInt("pr");
+        final int cr = sk.optInt("cr");
+        final int mon = sk.optInt("mo");
+        final boolean stone = sid >= 1100001 && sid <= 1100080;
+        final String desc = sk.optString("d", "");
+        final String extra = sk.optString("x", "");
+        List<int[]> learners = skillLearners == null ? null : skillLearners.get(sid);
+        final int total = learners == null ? 0 : learners.size();
+
+        LinearLayout col0 = new LinearLayout(this);
+        col0.setOrientation(LinearLayout.VERTICAL);
+        col0.setPadding(dp(2), 0, dp(2), dp(12));
+        sv.addView(col0, new FrameLayout.LayoutParams(-1, -2));
+        col0.addView(dexBackView(backLabel, back));
+
+        LinearLayout hero = new LinearLayout(this);
+        hero.setOrientation(LinearLayout.VERTICAL);
+        hero.setGravity(Gravity.CENTER_HORIZONTAL);
+        TextView name = new TextView(this);
+        name.setText(nm);
+        name.setTextSize(21);
+        name.setTypeface(Typeface.DEFAULT_BOLD);
+        name.setTextColor(C_TEXT);
+        name.setGravity(Gravity.CENTER);
+        hero.addView(name);
+
+        LinearLayout tags = dexChipLine();
+        tags.setPadding(0, dp(8), 0, 0);
+        dexAddChip(tags, dexChipView(ty, col, (col & 0x00FFFFFF) | 0x22000000,
+                (col & 0x00FFFFFF) | 0x66000000), 6);
+        dexAddChip(tags, dexChipView(cat, C_CYAN, 0x145FD8F0, 0x665FD8F0), 6);
+        if (sk.optInt("mh") == 1) {
+            dexAddChip(tags, dexChipView("必中", C_CYAN, 0x145FD8F0, 0x665FD8F0), 6);
+        }
+        if (cr > 0) {
+            dexAddChip(tags, dexChipView("致命一击 +" + cr + "/16",
+                    C_GOLD, 0x1AF0C24B, 0x66F0C24B), 6);
+        }
+        if (stone) {
+            dexAddChip(tags, dexChipView("技能石", 0xFFC9A6FF, 0x1AC9A6FF, 0x66C9A6FF), 6);
+        }
+        if (mon > 0) {
+            dexAddChip(tags, dexChipView("BOSS", 0xFFFFB36B, 0x1AFFB36B, 0x66FFB36B), 0);
+        }
+        hero.addView(tags);
+
+        TextView sub = new TextView(this);
+        sub.setTextSize(10);
+        sub.setTextColor(C_TEXT_FAINT);
+        sub.setGravity(Gravity.CENTER);
+        sub.setPadding(0, dp(6), 0, 0);
+        sub.setText("ID " + sid + "   ·   可学精灵 " + total + " 只");
+        hero.addView(sub);
+        col0.addView(hero);
+
+        LinearLayout statCard = dexCard();
+        statCard.addView(dexSectionTitle("基础数据"));
+        String powerText = power >= 100000 ? "占位" : (power > 0 ? String.valueOf(power) : "—");
+        String accText = acc > 0 ? acc + "%" : "—";
+        String ppText = pp > 0 ? String.valueOf(pp) : "—";
+        String priText = pri > 0 ? "+" + pri : String.valueOf(pri);
+        statCard.addView(dexStatGrid(new String[]{"威力", "命中", "PP", "先制"},
+                new String[]{powerText, accText, ppText, priText}, null));
+        dexAddCard(col0, statCard, 14);
+
+        LinearLayout descCard = dexCard();
+        descCard.addView(dexSectionTitle("技能描述"));
+        TextView body = new TextView(this);
+        body.setTextSize(12);
+        body.setTextColor(desc.length() > 0 ? C_TEXT : C_TEXT_FAINT);
+        body.setLineSpacing(dp(4), 1f);
+        body.setPadding(0, dp(7), 0, dp(2));
+        body.setText(desc.length() > 0 ? desc : "客户端未提供该技能的描述文本。");
+        descCard.addView(body);
+        dexAddCard(col0, descCard, 10);
+
+        if (extra.length() > 0) {
+            LinearLayout extraCard = new LinearLayout(this);
+            extraCard.setOrientation(LinearLayout.VERTICAL);
+            extraCard.setBackground(roundStroke(0x1AF0C24B, 0x66F0C24B, 12, 1));
+            extraCard.setPadding(dp(12), dp(10), dp(12), dp(10));
+            TextView label = new TextView(this);
+            label.setText("补充说明");
+            label.setTextSize(11);
+            label.setTypeface(Typeface.DEFAULT_BOLD);
+            label.setTextColor(C_GOLD);
+            extraCard.addView(label);
+            TextView text = new TextView(this);
+            text.setTextSize(12);
+            text.setTextColor(0xFFF6D98E);
+            text.setLineSpacing(dp(4), 1f);
+            text.setPadding(0, dp(6), 0, dp(1));
+            text.setText(extra);
+            extraCard.addView(text);
+            dexAddCard(col0, extraCard, 10);
+        }
+
+        LinearLayout learnCard = dexCard();
+        learnCard.addView(dexSectionTitle("可学精灵" + (total > 0 ? "（" + total + "）" : "")));
+        if (total == 0) {
+            TextView empty = new TextView(this);
+            empty.setText(stone ? "技能石技能，无精灵通过升级习得" : "无精灵可通过升级习得该技能");
+            empty.setTextSize(11);
+            empty.setTextColor(C_TEXT_FAINT);
+            empty.setPadding(0, dp(10), 0, dp(4));
+            learnCard.addView(empty);
+        } else {
+            int cap = Math.min(total, 60);
+            for (int i = 0; i < cap; i++) {
+                int[] e = learners.get(i);
+                JSONObject pet = dexPets.optJSONObject(e[0]);
+                if (pet != null) learnCard.addView(dexLearnerRow(pet, e[1], sv, petOpen));
+            }
+            if (total > cap) {
+                TextView more = new TextView(this);
+                more.setText("仅显示前 60 只 · 共 " + total + " 只");
+                more.setTextSize(9);
+                more.setTextColor(C_TEXT_FAINT);
+                more.setGravity(Gravity.CENTER);
+                more.setPadding(0, dp(8), 0, dp(2));
+                learnCard.addView(more);
+            }
+        }
+        dexAddCard(col0, learnCard, 10);
+    }
+
+    private View dexLearnerRow(final JSONObject pet, int level, final View origin,
+                               final PetOpen petOpen) {
+        final String id = pet.optString("i");
+        final String nm = pet.optString("n");
+        final String ty = pet.optString("t", "未知");
+        final int col = dexTypeColor(ty);
+
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setMinimumHeight(dp(44));
+        row.setPadding(dp(4), dp(3), dp(4), dp(3));
+        row.setBackground(pressable(round(0x00000000, 8), 0x1FFFFFFF));
+        row.addView(dexIconView(id, nm, col, 4),
+                new LinearLayout.LayoutParams(dp(32), dp(32)));
+
+        LinearLayout mid = new LinearLayout(this);
+        mid.setOrientation(LinearLayout.VERTICAL);
+        mid.setPadding(dp(9), 0, dp(4), 0);
+        TextView name = new TextView(this);
+        name.setText(nm);
+        name.setTextSize(13);
+        name.setTextColor(C_TEXT);
+        mid.addView(name);
+        TextView meta = new TextView(this);
+        meta.setTextSize(9);
+        meta.setTextColor(C_TEXT_FAINT);
+        meta.setText("Lv." + level + " · " + ty);
+        mid.addView(meta);
+        row.addView(mid, new LinearLayout.LayoutParams(0, -2, 1f));
+
+        TextView arrow = new TextView(this);
+        arrow.setText("›");
+        arrow.setTextSize(16);
+        arrow.setTextColor(C_TEXT_FAINT);
+        row.addView(arrow);
+
+        row.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (petOpen != null) petOpen.open(pet, "← 返回技能", origin);
+            }
+        });
+        return row;
+    }
+
