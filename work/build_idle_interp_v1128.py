@@ -118,7 +118,9 @@ def _splash(tag, href, op, mat):
 
 
 def build_svg(fp, fq, u):
-    s = _tpl
+    # 淡出的水花必须用起点姿势 fp 的图案（此前固定用 A 的 80 路径水花，
+    # 在 D->E / B->C 段会让水花在摆到半程时突然回跳到 A 的大水花）。
+    s = _tpl.replace(S11[9], S11[fp], 1)
     a, b, body = _span(s)
     mats = _lerp(M[fp], M[fq], u)
     parts = []
@@ -129,8 +131,8 @@ def build_svg(fp, fq, u):
     if u > 0.0005:
         parts.append(_splash(_uses(fq)[11], 'shape11b', u, mats[11]))
     s = s[:a] + '<g id="sprite1">\n' + '\n'.join(parts) + '\n    </g>' + s[b:]
-    if fq != 9:
-        s = s.replace(S11[9], S11[9] + '\n    ' +
+    if u > 0.0005:
+        s = s.replace(S11[fp], S11[fp] + '\n    ' +
                       S11[fq].replace('<g id="shape11">', '<g id="shape11b">', 1), 1)
     return s
 
@@ -183,8 +185,9 @@ def main():
             out.alpha_composite(small.crop((sx, sy, ex, ey)),
                                 (max(0, dx), max(0, dy)))
         small.close()
-        # 用 alpha>=16 的可见内容做最终对齐，避免极淡水花把底边抬离画布
-        mask = out.split()[3].point(lambda v: 255 if v >= 16 else 0)
+        # 用 alpha>=32 的可见内容做最终对齐：底边极淡水花在 ASTC 量化后
+        # 可能掉到 16 以下，用 32 让底行多留 1px alpha 余量。
+        mask = out.split()[3].point(lambda v: 255 if v >= 32 else 0)
         vb = mask.getbbox()
         if vb is not None:
             sdx = int(round((W - (vb[0] + vb[2])) / 2.0))
