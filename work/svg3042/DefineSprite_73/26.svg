@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:ffdec="https://www.free-decompiler.com/flash" xmlns:xlink="http://www.w3.org/1999/xlink" ffdec:objectType="frame" height="155.8px" width="144.7px" xmlns="http://www.w3.org/2000/svg">
+  <g transform="matrix(1.0, 0.0, 0.0, 1.0, 174.45, -80.65)">
+    <use ffdec:characterId="72" height="18.9" id="flare" transform="matrix(-0.2907, 0.1932, -0.1932, -0.2907, -64.2285, 148.2182)" width="18.9" xlink:href="#sprite0"/>
+    <use ffdec:characterId="72" height="18.9" id="flare" transform="matrix(0.3031, -0.0361, 0.0361, 0.3031, -56.914, 128.8495)" width="18.9" xlink:href="#sprite0"/>
+    <use ffdec:characterId="72" height="18.9" id="flare" transform="matrix(0.5556, -0.0663, 0.0663, 0.5556, -120.1345, 205.3668)" width="18.9" xlink:href="#sprite4"/>
+    <use ffdec:characterId="72" height="18.9" id="flare" transform="matrix(1.0018, 0.4271, -0.4271, 1.0018, -97.4526, 90.0109)" width="18.9" xlink:href="#sprite4"/>
+    <use ffdec:characterId="72" height="18.9" id="flare" transform="matrix(1.0308, 2.638, -2.638, 1.0308, -73.9001, 162.7037)" width="18.9" xlink:href="#sprite4"/>
+    <use ffdec:characterId="72" height="18.9" id="flare" transform="matrix(-0.186, 1.0814, -1.0814, -0.186, -140.64, 190.4136)" width="18.9" xlink:href="#sprite4"/>
+    <use ffdec:characterId="72" height="18.9" id="flare" transform="matrix(-0.3321, 0.3839, -0.3839, -0.3321, -122.0364, 174.8665)" width="18.9" xlink:href="#sprite5"/>
+  </g>
+  <defs>
+    <g id="sprite0" transform="matrix(1.0, 0.0, 0.0, 1.0, 9.65, 9.4)">
+      <filter id="filter0">
+        <feColorMatrix in="SourceGraphic" result="filterResult0" type="matrix" values="-1.3777765 8.743103 2.0346727 0.0 1.5945096 3.5781517 5.067529 0.75431967 0.0 1.5945098 2.594891 10.254999 -3.4498894 0.0 1.59451 0.0 0.0 0.0 1.0 0.0"/>
+      </filter>
+      <use ffdec:characterId="66" filter="url(#filter0)" height="16.25" transform="matrix(-0.0235, -0.026, 0.0585, -0.0529, 5.5929, 7.4624)" width="536.95" xlink:href="#sprite1"/>
+      <filter id="filter1">
+        <feColorMatrix in="SourceGraphic" result="filterResult1" type="matrix" values="-1.3777765 8.743103 2.0346727 0.0 1.5945096 3.5781517 5.067529 0.75431967 0.0 1.5945098 2.594891 10.254999 -3.4498894 0.0 1.59451 0.0 0.0 0.0 1.0 0.0"/>
+      </filter>
+      <use ffdec:characterId="68" filter="url(#filter1)" height="61.15" transform="matrix(-0.0235, -0.026, 0.0585, -0.0529, -2.4339, 4.7366)" width="57.0" xlink:href="#sprite2"/>
+      <filter id="filter2">
+        <feColorMatrix in="SourceGraphic" result="filterResult2" type="matrix" values="-1.3777765 8.743103 2.0346727 0.0 1.5945096 3.5781517 5.067529 0.75431967 0.0 1.5945098 2.594891 10.254999 -3.4498894 0.0 1.59451 0.0 0.0 0.0 1.0 0.0"/>
+      </filter>
+      <use ffdec:characterId="68" filter="url(#filter2)" height="61.15" transform="matrix(0.0232, -0.0462, 0.0483, -0.0185, -4.453, 3.8086)" width="57.0" xlink:href="#sprite2"/>
+      <filter id="filter3">
+        <feColorMatrix in="SourceGraphic" result="filterResult3" type="matrix" values="-1.3777765 8.743103 2.0346727 0.0 1.5945096 3.5781517 5.067529 0.75431967 0.0 1.5945098 2.594891 10.254999 -3.4498894 0.0 1.59451 0.0 0.0 0.0 1.0 0.0"/>
+      </filter>
+      <use ffdec:characterId="68" filter="url(#filter3)" height="61.15" transform="matrix(0.0327, -0.0495, 0.0417, -0.0033, -4.5942, 3.0812)" width="57.0" xlink:href="#sprite2"/>
+      <filter id="filter4">
+        <feColorMatrix in="SourceGraphic" result="filterResult4" type="matrix" values="-1.3777765 8.743103 2.0346727 0.0 1.5945096 3.5781517 5.067529 0.75431967 0.0 1.5945098 2.594891 10.254999 -3.4498894 0.0 1.59451 0.0 0.0 0.0 1.0 0.0"/>
+      </filter>
+      <use ffdec:characterId="68" filter="url(#filter4)" height="61.15" transform="matrix(0.0389, 0.025, -0.0707, 0.0712, 1.8064, -5.577)" width="57.0" xlink:href="#sprite2"/>
+      <filter id="filter5">
+        <feColorMatrix in="SourceGraphic" result="filterResult5" type="matrix" values="-1.3777765 8.743103 2.0346727 0.0 1.5945096 3.5781517 5.067529 0.75431967 0.0 1.5945098 2.594891 10.254999 -3.4498894 0.0 1.59451 0.0 0.0 0.0 1.0 0.0"/>
+      </filter>
+      <use ffdec:characterId="68" filter="url(#filter5)" height="61.15" transform="matrix(-0.0784, 0.0623, -0.0192, -0.0425, 5.3119, -0.8528)" width="57.0" xlink:href="#sprite2"/>
+      <filter id="filter6">
+        <feColorMatrix in="SourceGraphic" result="filterResult6" type="matrix" values="-1.3777765 8.743103 2.0346727 0.0 1.5945096 3.5781517 5.067529 0.75431967 0.0 1.5945098 2.594891 10.254999 -3.4498894 0.0 1.59451 0.0 0.0 0.0 1.0 0.0"/>
+      </filter>
+      <use ffdec:characterId="70" filter="url(#filter6)" height="131.0" transform="matrix(-0.0235, -0.026, 0.0585, -0.0529, -0.7948, 7.09)" width="274.9" xlink:href="#sprite3"/>
+    </g>
+    <g id="sprite1" transform="matrix(1.0, 0.0, 0.0, 1.0, 268.45, 8.1)">
+      <use ffdec:characterId="65" height="16.25" transform="matrix(1.0, 0.0, 0.0, 1.0, -268.45, -8.1)" width="536.95" xlink:href="#shape0"/>
+    </g>
+    <g id="shape0" transform="matrix(1.0, 0.0, 0.0, 1.0, 268.45, 8.1)">
+      <path d="M189.9 -5.75 Q268.5 -3.35 268.5 0.0 268.5 3.35 189.9 5.75 111.25 8.1 0.0 8.15 -111.25 8.1 -189.8 5.75 -268.45 3.35 -268.45 0.0 -268.45 -3.35 -189.8 -5.75 -111.25 -8.1 0.0 -8.1 111.25 -8.1 189.9 -5.75" fill="url(#gradient0)" fill-rule="evenodd" stroke="none"/>
+    </g>
+    <radialGradient cx="0" cy="0" gradientTransform="matrix(0.3319, 0.0, 0.0, 0.01, 0.0, 0.0)" gradientUnits="userSpaceOnUse" id="gradient0" r="819.2" spreadMethod="pad">
+      <stop offset="0.0" stop-color="#ffe8ec"/>
+      <stop offset="0.20784313725490197" stop-color="#2ba5ff"/>
+      <stop offset="0.38823529411764707" stop-color="#1d00e6" stop-opacity="0.6"/>
+      <stop offset="1.0" stop-color="#652bff" stop-opacity="0.0"/>
+    </radialGradient>
+    <g id="sprite2" transform="matrix(1.0, 0.0, 0.0, 1.0, 56.25, 60.0)">
+      <use ffdec:characterId="67" height="61.15" transform="matrix(1.0, 0.0, 0.0, 1.0, -56.25, -60.0)" width="57.0" xlink:href="#shape1"/>
+    </g>
+    <g id="shape1" transform="matrix(1.0, 0.0, 0.0, 1.0, 56.25, 60.0)">
+      <path d="M-46.6 -60.0 L0.75 1.15 -56.25 -58.1 -46.6 -60.0" fill="url(#gradient1)" fill-rule="evenodd" stroke="none"/>
+    </g>
+    <radialGradient cx="0" cy="0" gradientTransform="matrix(0.0826, 0.0, 0.0, 0.0826, -6.85, -11.85)" gradientUnits="userSpaceOnUse" id="gradient1" r="819.2" spreadMethod="pad">
+      <stop offset="0.0" stop-color="#ffe8ec"/>
+      <stop offset="0.23137254901960785" stop-color="#2fc7ff"/>
+      <stop offset="0.38823529411764707" stop-color="#0000df" stop-opacity="0.6"/>
+      <stop offset="1.0" stop-color="#452bff" stop-opacity="0.0"/>
+    </radialGradient>
+    <g id="sprite3" transform="matrix(1.0, 0.0, 0.0, 1.0, 137.45, 65.5)">
+      <use ffdec:characterId="69" height="131.0" transform="matrix(1.0, 0.0, 0.0, 1.0, -137.45, -65.5)" width="274.9" xlink:href="#shape2"/>
+    </g>
+    <g id="shape2" transform="matrix(1.0, 0.0, 0.0, 1.0, 137.45, 65.5)">
+      <path d="M97.2 -46.35 Q137.4 -27.15 137.45 0.0 137.4 27.15 97.2 46.35 56.95 65.5 0.0 65.5 -57.0 65.5 -97.2 46.35 -137.45 27.15 -137.45 0.0 -137.45 -27.15 -97.2 -46.35 -57.0 -65.55 0.0 -65.5 56.95 -65.55 97.2 -46.35" fill="url(#gradient2)" fill-rule="evenodd" stroke="none"/>
+    </g>
+    <radialGradient cx="0" cy="0" gradientTransform="matrix(0.1699, 0.0, 0.0, 0.081, 0.0, 0.0)" gradientUnits="userSpaceOnUse" id="gradient2" r="819.2" spreadMethod="pad">
+      <stop offset="0.07058823529411765" stop-color="#ffe8ec"/>
+      <stop offset="0.1803921568627451" stop-color="#00a6ff"/>
+      <stop offset="0.38823529411764707" stop-color="#5000e6" stop-opacity="0.6"/>
+      <stop offset="1.0" stop-color="#452bff" stop-opacity="0.0"/>
+    </radialGradient>
+    <g id="sprite4" transform="matrix(1.0, 0.0, 0.0, 1.0, 9.65, 9.4)">
+      <filter id="filter7">
+        <feColorMatrix in="SourceGraphic" result="filterResult7" type="matrix" values="-1.3777765 8.743103 2.0346727 0.0 1.5945096 3.5781517 5.067529 0.75431967 0.0 1.5945098 2.594891 10.254999 -3.4498894 0.0 1.59451 0.0 0.0 0.0 1.0 0.0"/>
+      </filter>
+      <use ffdec:characterId="66" filter="url(#filter7)" height="16.25" transform="matrix(-0.0235, -0.026, 0.0585, -0.0529, 5.5929, 7.4624)" width="536.95" xlink:href="#sprite1"/>
+      <filter id="filter8">
+        <feColorMatrix in="SourceGraphic" result="filterResult8" type="matrix" values="-1.3777765 8.743103 2.0346727 0.0 1.5945096 3.5781517 5.067529 0.75431967 0.0 1.5945098 2.594891 10.254999 -3.4498894 0.0 1.59451 0.0 0.0 0.0 1.0 0.0"/>
+      </filter>
+      <use ffdec:characterId="68" filter="url(#filter8)" height="61.15" transform="matrix(-0.0235, -0.026, 0.0585, -0.0529, -2.4339, 4.7366)" width="57.0" xlink:href="#sprite2"/>
+      <filter id="filter9">
+        <feColorMatrix in="SourceGraphic" result="filterResult9" type="matrix" values="-1.3777765 8.743103 2.0346727 0.0 1.5945096 3.5781517 5.067529 0.75431967 0.0 1.5945098 2.594891 10.254999 -3.4498894 0.0 1.59451 0.0 0.0 0.0 1.0 0.0"/>
+      </filter>
+      <use ffdec:characterId="68" filter="url(#filter9)" height="61.15" transform="matrix(0.0232, -0.0462, 0.0483, -0.0185, -4.453, 3.8086)" width="57.0" xlink:href="#sprite2"/>
+      <filter id="filter10">
+        <feColorMatrix in="SourceGraphic" result="filterResult10" type="matrix" values="-1.3777765 8.743103 2.0346727 0.0 1.5945096 3.5781517 5.067529 0.75431967 0.0 1.5945098 2.594891 10.254999 -3.4498894 0.0 1.59451 0.0 0.0 0.0 1.0 0.0"/>
+      </filter>
+      <use ffdec:characterId="68" filter="url(#filter10)" height="61.15" transform="matrix(0.0327, -0.0495, 0.0417, -0.0033, -4.5942, 3.0812)" width="57.0" xlink:href="#sprite2"/>
+      <filter id="filter11">
+        <feColorMatrix in="SourceGraphic" result="filterResult11" type="matrix" values="-1.3777765 8.743103 2.0346727 0.0 1.5945096 3.5781517 5.067529 0.75431967 0.0 1.5945098 2.594891 10.254999 -3.4498894 0.0 1.59451 0.0 0.0 0.0 1.0 0.0"/>
+      </filter>
+      <use ffdec:characterId="68" filter="url(#filter11)" height="61.15" transform="matrix(0.0389, 0.025, -0.0707, 0.0712, 1.8064, -5.577)" width="57.0" xlink:href="#sprite2"/>
+      <filter id="filter12">
+        <feColorMatrix in="SourceGraphic" result="filterResult12" type="matrix" values="-1.3777765 8.743103 2.0346727 0.0 1.5945096 3.5781517 5.067529 0.75431967 0.0 1.5945098 2.594891 10.254999 -3.4498894 0.0 1.59451 0.0 0.0 0.0 1.0 0.0"/>
+      </filter>
+      <use ffdec:characterId="68" filter="url(#filter12)" height="61.15" transform="matrix(-0.0784, 0.0623, -0.0192, -0.0425, 5.3119, -0.8528)" width="57.0" xlink:href="#sprite2"/>
+      <filter id="filter13">
+        <feColorMatrix in="SourceGraphic" result="filterResult13" type="matrix" values="-1.3777765 8.743103 2.0346727 0.0 1.5945096 3.5781517 5.067529 0.75431967 0.0 1.5945098 2.594891 10.254999 -3.4498894 0.0 1.59451 0.0 0.0 0.0 1.0 0.0"/>
+      </filter>
+      <use ffdec:characterId="70" filter="url(#filter13)" height="131.0" transform="matrix(-0.0235, -0.026, 0.0585, -0.0529, -0.7948, 7.09)" width="274.9" xlink:href="#sprite3"/>
+    </g>
+    <g id="sprite5" transform="matrix(1.0, 0.0, 0.0, 1.0, 9.65, 9.4)">
+      <filter id="filter14">
+        <feColorMatrix in="SourceGraphic" result="filterResult14" type="matrix" values="-1.3777765 8.743103 2.0346727 0.0 1.5945096 3.5781517 5.067529 0.75431967 0.0 1.5945098 2.594891 10.254999 -3.4498894 0.0 1.59451 0.0 0.0 0.0 1.0 0.0"/>
+      </filter>
+      <use ffdec:characterId="66" filter="url(#filter14)" height="16.25" transform="matrix(-0.0235, -0.026, 0.0585, -0.0529, 5.5929, 7.4624)" width="536.95" xlink:href="#sprite1"/>
+      <filter id="filter15">
+        <feColorMatrix in="SourceGraphic" result="filterResult15" type="matrix" values="-1.3777765 8.743103 2.0346727 0.0 1.5945096 3.5781517 5.067529 0.75431967 0.0 1.5945098 2.594891 10.254999 -3.4498894 0.0 1.59451 0.0 0.0 0.0 1.0 0.0"/>
+      </filter>
+      <use ffdec:characterId="68" filter="url(#filter15)" height="61.15" transform="matrix(-0.0235, -0.026, 0.0585, -0.0529, -2.4339, 4.7366)" width="57.0" xlink:href="#sprite2"/>
+      <filter id="filter16">
+        <feColorMatrix in="SourceGraphic" result="filterResult16" type="matrix" values="-1.3777765 8.743103 2.0346727 0.0 1.5945096 3.5781517 5.067529 0.75431967 0.0 1.5945098 2.594891 10.254999 -3.4498894 0.0 1.59451 0.0 0.0 0.0 1.0 0.0"/>
+      </filter>
+      <use ffdec:characterId="68" filter="url(#filter16)" height="61.15" transform="matrix(0.0232, -0.0462, 0.0483, -0.0185, -4.453, 3.8086)" width="57.0" xlink:href="#sprite2"/>
+      <filter id="filter17">
+        <feColorMatrix in="SourceGraphic" result="filterResult17" type="matrix" values="-1.3777765 8.743103 2.0346727 0.0 1.5945096 3.5781517 5.067529 0.75431967 0.0 1.5945098 2.594891 10.254999 -3.4498894 0.0 1.59451 0.0 0.0 0.0 1.0 0.0"/>
+      </filter>
+      <use ffdec:characterId="68" filter="url(#filter17)" height="61.15" transform="matrix(0.0327, -0.0495, 0.0417, -0.0033, -4.5942, 3.0812)" width="57.0" xlink:href="#sprite2"/>
+      <filter id="filter18">
+        <feColorMatrix in="SourceGraphic" result="filterResult18" type="matrix" values="-1.3777765 8.743103 2.0346727 0.0 1.5945096 3.5781517 5.067529 0.75431967 0.0 1.5945098 2.594891 10.254999 -3.4498894 0.0 1.59451 0.0 0.0 0.0 1.0 0.0"/>
+      </filter>
+      <use ffdec:characterId="68" filter="url(#filter18)" height="61.15" transform="matrix(0.0389, 0.025, -0.0707, 0.0712, 1.8064, -5.577)" width="57.0" xlink:href="#sprite2"/>
+      <filter id="filter19">
+        <feColorMatrix in="SourceGraphic" result="filterResult19" type="matrix" values="-1.3777765 8.743103 2.0346727 0.0 1.5945096 3.5781517 5.067529 0.75431967 0.0 1.5945098 2.594891 10.254999 -3.4498894 0.0 1.59451 0.0 0.0 0.0 1.0 0.0"/>
+      </filter>
+      <use ffdec:characterId="68" filter="url(#filter19)" height="61.15" transform="matrix(-0.0784, 0.0623, -0.0192, -0.0425, 5.3119, -0.8528)" width="57.0" xlink:href="#sprite2"/>
+      <filter id="filter20">
+        <feColorMatrix in="SourceGraphic" result="filterResult20" type="matrix" values="-1.3777765 8.743103 2.0346727 0.0 1.5945096 3.5781517 5.067529 0.75431967 0.0 1.5945098 2.594891 10.254999 -3.4498894 0.0 1.59451 0.0 0.0 0.0 1.0 0.0"/>
+      </filter>
+      <use ffdec:characterId="70" filter="url(#filter20)" height="131.0" transform="matrix(-0.0235, -0.026, 0.0585, -0.0529, -0.7948, 7.09)" width="274.9" xlink:href="#sprite3"/>
+    </g>
+  </defs>
+</svg>
