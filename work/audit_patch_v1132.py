@@ -11,7 +11,7 @@ from audit_v1132 import chk, fails, walk
 from build_catalog_v1132 import parse_key, decode
 UnityPy.config.FALLBACK_UNITY_VERSION = '2022.3.62f3'
 
-PATCH = '/workspace/patch_v1.1.32'
+PATCH = sys.argv[1] if len(sys.argv) > 1 else '/workspace/patch_v1.1.32'
 BUNDLE = 'fight3041_assets_all_6b19939c69def5b7c66c3cc84ce44beb.bundle'
 CAT = os.path.join(PATCH, 'assets/aa/catalog.json')
 AND = os.path.join(PATCH, 'assets/aa/Android')
