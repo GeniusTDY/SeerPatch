@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""v1.1.30: 在 catalog.json 中登记 fight3042 / fight3043。
+"""v1.1.31: 在 catalog.json 中登记 fight3042 / fight3043。
 
 每只精灵追加：
   - bundle key（文件名）
@@ -11,18 +11,18 @@
 import json, base64, struct, hashlib
 
 SRC = '/workspace/patch_v1.1.29/assets/aa/catalog.json'
-OUT = '/workspace/work/catalog_v1130.json'
+OUT = '/workspace/work/catalog_v1131.json'
 
 PETS = {
     '3042': {
-        'hash': hashlib.md5(b'seer-fight-3042-v1.1.30').hexdigest(),
-        'plain_size': 12402191,
+        'hash': hashlib.md5(b'seer-fight-3042-v1.1.31').hexdigest(),
+        'plain_size': 5758240,
         'trim_key_idx': (19601, 19603, 19605),
         'trim_entry_idx': (10888, 10889, 10890),
     },
     '3043': {
-        'hash': hashlib.md5(b'seer-fight-3043-v1.1.30').hexdigest(),
-        'plain_size': 18434696,
+        'hash': hashlib.md5(b'seer-fight-3043-v1.1.31').hexdigest(),
+        'plain_size': 11793405,
         'trim_key_idx': (19607, 19609, 19611),
         'trim_entry_idx': (10891, 10892, 10893),
     },
@@ -110,7 +110,7 @@ def main():
     for pid, cfg in PETS.items():
         bundle = 'fight%s_assets_all_%s.bundle' % (pid, cfg['hash'])
         assert bundle not in keys
-        h = hashlib.md5(('dep-%s-v1130' % pid).encode()).digest()
+        h = hashlib.md5(('dep-%s-v1131' % pid).encode()).digest()
         dh = struct.unpack('<i', h[:4])[0]
         while dh in used:
             h = hashlib.md5(h).digest()
