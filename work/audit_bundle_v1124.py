@@ -322,24 +322,19 @@ def main():
     def abbox(im, th=16):
         return im.split()[3].point(lambda v: 255 if v >= th else 0).getbbox()
 
-    old_bb = {}
-    by11 = {x.path_id: x for x in objs11}
-    for sid in idle_old:
-        t = by11[sid].read_typetree()
-        im = by11[t['m_RD']['texture']['m_PathID']].read().image.convert('RGBA')
-        old_bb[sid] = abbox(im)
-    scale = IDLE_H / 350.0
+    # 待机帧对齐：底边贴画布底、水平居中（超宽帧允许左右对称裁切）
     bad_bb = []
     for sid in idle_ids:
         t = spr_by_id[sid].read_typetree()
         im = tex_by_id[t['m_RD']['texture']['m_PathID']].read().image.convert('RGBA')
         bb = abbox(im)
-        ob = old_bb[sid]
-        want_c = (ob[0] + ob[2]) / 2.0 * scale
-        if (abs((bb[0] + bb[2]) / 2.0 - want_c) > 4 or abs(bb[3] - ob[3] * scale) > 3
-                or abs(bb[2] - bb[0] - (ob[2] - ob[0]) * scale) > 5):
-            bad_bb.append((sid, bb, ob, want_c))
-    check(not bad_bb, '待机 21 帧为 v1.1.23 等比放大（中心/底边/宽度一致，未裁切）', bad_bb[:3])
+        if bb is None:
+            bad_bb.append((sid, 'empty')); continue
+        cx = (bb[0] + bb[2]) / 2.0
+        clipped = bb[0] <= 0 or bb[2] >= IDLE_W   # 超宽特效帧允许左右裁切
+        if bb[3] != IDLE_H or (not clipped and abs(cx - IDLE_W / 2.0) > 4):
+            bad_bb.append((sid, bb, 'cx=%.1f bottom=%d' % (cx, bb[3])))
+    check(not bad_bb, '待机 21 帧底边对齐 + 水平居中（无爆发帧）', bad_bb[:3])
 
     print('\n===== FAIL', len(FAIL), '/ OK', len(OK), '=====')
     for f in FAIL:

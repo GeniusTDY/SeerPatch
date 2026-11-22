@@ -21,8 +21,10 @@
 
   说明：21 帧直接取自官方矢量源
   http://seer.61.com/resource/fightResource/pet/swf/3041.swf
-  （FFDec 导出 DefineSprite_139_pet 逐帧 SVG，4 倍超采样渲染），
-  取帧顺序与 v1.1.23 完全一致，只提升清晰度，不改变动画节奏。
+  （FFDec 导出 DefineSprite_139_pet 逐帧 SVG，4 倍超采样渲染）。
+  SWF 原 30 帧中第 6~8 帧是全屏蓝色爆发特效（会完全遮住本体，v1.1.23
+  误采样进了待机），本版只取连续待机段第 9~30 帧均分到 21 帧，
+  因此待机循环里不再出现爆发闪烁。
 
 【v1.1.23 内容：3041 对战立绘放大】
 - 3041_1（待机）21 帧统一重排到 328x350 画布：美术按 1.33 倍重绘、
@@ -57,8 +59,8 @@
 
 【文件清单】
   assets/aa/catalog.json                          4113040 B （v1.1.21，未改动）
-  assets/aa/Android/fight3041_...bundle           5523072 B （v1.1.24 待机 trim）
-      SHA-256 5dcfa31b7c0c5a6d05516e6eaac3db0da99d50b5b1670a42130a1db14cebb8e9
+  assets/aa/Android/fight3041_...bundle           5522272 B （v1.1.24 待机 trim）
+      SHA-256 bcdb0468c25c53d8976cf530c365190292f50802a89d0023df8fe48c0597c5b2
   assets/aa/Android/peticon_...bundle            13393936 B （v1.1.16）
   assets/aa/Android/fight_...bundle              22225328 B （v1.1.16）
   assets/aa/Android/petstorage_...bundle            91232 B （v1.1.15）

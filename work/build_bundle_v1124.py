@@ -46,6 +46,9 @@ TRIM_NAME = '3041_1.trim'
 TRIM_PATH = 'Assets/PetAnimation/FightAnimation/3041/3041_1/3041_1.trim.json'
 
 SVG_DIR = '/workspace/work/swfout/sprites/DefineSprite_139_pet'
+# 官方 SWF 的 30 帧里，6~8 是全屏蓝色爆发特效（遮住本体，v1.1.23 误采入待机）。
+# 只取连续待机段 9~30（22 帧）均分到 21 帧，避免爆发帧，并保持 30→9 的循环连贯。
+SVG_FIRST, SVG_LAST = 9, 30
 RENDER_SCALE = 4
 # v1.1.23 待机等价比 = BASE_SCALE(0.95) * IDLE_UP(1.40) = 1.33（328x350 画布）；
 # 本版画布 459x490，保持同一显示尺寸，等价放大 459/328。
@@ -126,9 +129,10 @@ def main():
     assert len(order) == 21, len(order)
     print('idle frames', len(order), 'target', TARGET_W, 'x', TARGET_H)
     srcs = sorted(os.listdir(SVG_DIR), key=lambda x: int(x.split('.')[0]))
-    jmap = [int(round(i * (len(srcs) - 1) / float(len(order) - 1)))
+    pool = list(range(SVG_FIRST, SVG_LAST + 1))
+    jmap = [pool[int(round(i * (len(pool) - 1) / float(len(order) - 1)))] - 1
             for i in range(len(order))]
-    print('idle svg frames', len(srcs), 'map', jmap)
+    print('idle svg frames', len(srcs), 'pool', pool, 'map', jmap)
 
     frames = []
     for i, sid in enumerate(order):
