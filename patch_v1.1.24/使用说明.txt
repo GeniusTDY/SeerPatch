@@ -19,9 +19,10 @@
   对象总数 445 → 446（218 Sprite + 218 Texture2D + 4 TextAsset + 4 Clip + AB + MonoScript）。
 - 贴图仍为 ASTC 8x8（format 51），数据内联存储，无 .resS 流文件。
 
-  说明：本次打包环境未包含 swfsvg 原始矢量素材，21 帧由 v1.1.23 已渲染的
-  328x350 贴图等比放大（LANCZOS + 预乘 alpha）得到，不是从 SVG 重新渲染；
-  若后续补回 SVG 源，可用 build_bundle_v1124.py 换成矢量重绘，画质还能再提升。
+  说明：21 帧直接取自官方矢量源
+  http://seer.61.com/resource/fightResource/pet/swf/3041.swf
+  （FFDec 导出 DefineSprite_139_pet 逐帧 SVG，4 倍超采样渲染），
+  取帧顺序与 v1.1.23 完全一致，只提升清晰度，不改变动画节奏。
 
 【v1.1.23 内容：3041 对战立绘放大】
 - 3041_1（待机）21 帧统一重排到 328x350 画布：美术按 1.33 倍重绘、
@@ -56,8 +57,8 @@
 
 【文件清单】
   assets/aa/catalog.json                          4113040 B （v1.1.21，未改动）
-  assets/aa/Android/fight3041_...bundle           5567984 B （v1.1.24 待机 trim）
-      SHA-256 77ee7168707048794cb2ac1ebda16e91d2a27b9c0aa56fc6034ad80fea77426d
+  assets/aa/Android/fight3041_...bundle           5523072 B （v1.1.24 待机 trim）
+      SHA-256 5dcfa31b7c0c5a6d05516e6eaac3db0da99d50b5b1670a42130a1db14cebb8e9
   assets/aa/Android/peticon_...bundle            13393936 B （v1.1.16）
   assets/aa/Android/fight_...bundle              22225328 B （v1.1.16）
   assets/aa/Android/petstorage_...bundle            91232 B （v1.1.15）

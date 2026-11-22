@@ -6,12 +6,13 @@ v1.1.23 待机 21 帧固定在 328x350 画布，靠 prefab 的 330x389 框拉伸
 本版给 3041_1 也加上 trim 资源，让 FightAnimTrimApplier 直接按 trimW x trimH
 设置显示尺寸，不再受 330x389 框限制。
 
-- 21 帧贴图统一放大到目标画布（trimH ≈ 490），保持水平中心 + 底边对齐；
+- 21 帧按 v1.1.23 的同一取帧映射，从 SVG 矢量重绘到目标画布（保持水平中心 + 底边对齐）；
 - 新增 TextAsset `3041_1.trim`，AB 容器路径与 PreloadTable 同步补一条；
 - 攻击 3 段（3041_2/3/4）贴图与 trim 数据保持 v1.1.23 原样。
 
-注意：本次包内没有 swfsvg 原始 SVG 素材，21 帧由 v1.1.23 已渲染的 328x350
-贴图放大得到（LANCZOS + 预乘 alpha），不是从矢量源重绘。
+21 帧直接从官方 SWF（seer.61.com/resource/fightResource/pet/swf/3041.swf）
+导出的 SVG 逐帧矢量重绘，画布比例与 v1.1.23 完全一致（等价比 1.861），
+不是把 v1.1.23 的贴图放大。
 """
 import sys, os, io, json, time, gc, struct
 sys.path.insert(0, '/workspace/tools')
@@ -28,8 +29,8 @@ from UnityPy.files.ObjectReader import ObjectReader
 from UnityPy.enums import ClassIDType
 import astc_encoder
 import seer
-import numpy as np
-from PIL import Image, ImageFilter
+import cairosvg
+from PIL import Image
 
 SRC_PLAIN = '/workspace/work/fight3041_v11.plain'
 SRC_ENC = '/workspace/work/fight3041_v11.bundle'
@@ -43,6 +44,12 @@ TARGET_H = 490
 TARGET_W = int(round(SRC_IDLE_SIZE[0] * TARGET_H / float(SRC_IDLE_SIZE[1])))
 TRIM_NAME = '3041_1.trim'
 TRIM_PATH = 'Assets/PetAnimation/FightAnimation/3041/3041_1/3041_1.trim.json'
+
+SVG_DIR = '/workspace/work/swfout/sprites/DefineSprite_139_pet'
+RENDER_SCALE = 4
+# v1.1.23 待机等价比 = BASE_SCALE(0.95) * IDLE_UP(1.40) = 1.33（328x350 画布）；
+# 本版画布 459x490，保持同一显示尺寸，等价放大 459/328。
+ART_SCALE = 0.95 * 1.40 * (TARGET_W / float(SRC_IDLE_SIZE[0]))
 
 os.makedirs(PREVIEW, exist_ok=True)
 
@@ -63,21 +70,6 @@ def encode_astc(img):
     img = pad_image(img, w, h)
     ai = astc_encoder.ASTCImage(astc_encoder.ASTCType.U8, w, h, 1, img.tobytes('raw', 'RGBA'))
     return ctx.compress(ai, sw)
-
-
-def resize_rgba(im, W, H):
-    """预乘 alpha 后 LANCZOS 缩放，避免透明边缘出现黑边。"""
-    arr = np.asarray(im, dtype=np.float32)
-    a = arr[..., 3:4] / 255.0
-    pre = np.concatenate([arr[..., :3] * a, arr[..., 3:4]], axis=2)
-    pre_img = Image.fromarray(pre.clip(0, 255).astype(np.uint8), 'RGBA')
-    out = pre_img.resize((W, H), Image.LANCZOS)
-    o = np.asarray(out, dtype=np.float32)
-    oa = o[..., 3:4]
-    rgb = np.where(oa > 0, o[..., :3] * 255.0 / np.maximum(oa, 1), 0)
-    o[..., :3] = rgb
-    res = Image.fromarray(o.clip(0, 255).astype(np.uint8), 'RGBA')
-    return res.filter(ImageFilter.UnsharpMask(radius=1.0, percent=35, threshold=2))
 
 
 def patch_sprite(st, W, H, tex_pid):
@@ -133,6 +125,10 @@ def main():
              clips[IDLE_CLIP].read_typetree()['m_ClipBindingConstant']['pptrCurveMapping']]
     assert len(order) == 21, len(order)
     print('idle frames', len(order), 'target', TARGET_W, 'x', TARGET_H)
+    srcs = sorted(os.listdir(SVG_DIR), key=lambda x: int(x.split('.')[0]))
+    jmap = [int(round(i * (len(srcs) - 1) / float(len(order) - 1)))
+            for i in range(len(order))]
+    print('idle svg frames', len(srcs), 'map', jmap)
 
     frames = []
     for i, sid in enumerate(order):
@@ -142,9 +138,27 @@ def main():
         H0 = int(st['m_Rect']['height'])
         assert (W0, H0) == SRC_IDLE_SIZE, (i, W0, H0)
         tex = by_id[st['m_RD']['texture']['m_PathID']]
-        im = tex.read().image.convert('RGBA')
-        out = resize_rgba(im, TARGET_W, TARGET_H)
+
+        png = cairosvg.svg2png(url=os.path.join(SVG_DIR, srcs[jmap[i]]),
+                               scale=RENDER_SCALE)
+        im = Image.open(io.BytesIO(png)).convert('RGBA')
+        bb = im.getbbox()
+        assert bb is not None, (i, jmap[i])
+        art = im.crop(bb)
         im.close()
+        nw = max(1, int(round(art.width * ART_SCALE / RENDER_SCALE)))
+        nh = max(1, int(round(art.height * ART_SCALE / RENDER_SCALE)))
+        small = art.resize((nw, nh), Image.LANCZOS)
+        art.close()
+        out = Image.new('RGBA', (TARGET_W, TARGET_H), (0, 0, 0, 0))
+        dx = (TARGET_W - nw) // 2
+        dy = TARGET_H - nh
+        sx, sy = max(0, -dx), max(0, -dy)
+        ex, ey = min(nw, TARGET_W - dx), min(nh, TARGET_H - dy)
+        if ex > sx and ey > sy:
+            out.alpha_composite(small.crop((sx, sy, ex, ey)),
+                                (max(0, dx), max(0, dy)))
+        small.close()
         out.save(os.path.join(PREVIEW, 'idle_%03d.png' % (i + 1)))
         data = encode_astc(out)
         out.close()
